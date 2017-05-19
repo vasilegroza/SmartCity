@@ -1,4 +1,4 @@
-<ion-menu [content]="content">
+<ion-menu id ="myMenu" [content]="content">
 
   <ion-header>
     <ion-toolbar>
@@ -7,12 +7,23 @@
   </ion-header>
 
   <ion-content>
+    
+     <ion-list>
+    
+      <ion-item >
+        user image
+        <ion-avatar item-center ngIf="user">
+            <img src="{{ user.picture }}">
+        </ion-avatar>
 
-
-    <ion-list>
-      <button ion-item *ngFor="let p of pages" (click)="openPage(p)">
+      </ion-item>
+       
+      <ion-item *ngFor="let p of pages" (click)="openPage(p)">
+          <ion-thumbnail item-left>
+            <img src="{{p.img}}">
+          </ion-thumbnail>
         {{p.title}}
-      </button>
+      </ion-item>
     </ion-list>
   </ion-content>
 

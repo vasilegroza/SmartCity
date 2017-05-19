@@ -17,11 +17,12 @@ import { Profile } from '../pages/profile/profile'
 import { ToDo } from  '../pages/to-do/to-do'
 import { Settings } from '../pages/settings/settings'
 import { EventDetails } from '../pages/event-details/event-details'
-
+import { StartUpPage } from '../pages/start-up-page/start-up-page'
 // auth component
 import { HttpModule, Http} from '@angular/http'
 import { AuthConfig, AuthHttp } from 'angular2-jwt'
 import { AuthService } from '../services/auth/auth.service'
+
 import { Storage } from '@ionic/storage'
 
 let storage:Storage = new Storage('localstorage');
@@ -35,6 +36,7 @@ export function getAuthHttp(http){
 @NgModule({
   declarations: [
     MyApp,
+    StartUpPage,
     Home,
     Profile,
     ToDo,
@@ -53,6 +55,7 @@ export function getAuthHttp(http){
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    StartUpPage,
     Home,
     Profile,
     ToDo,

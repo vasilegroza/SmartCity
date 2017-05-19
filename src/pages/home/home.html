@@ -18,4 +18,15 @@
 
 <ion-content padding>
   <h3>Welcome to Smart City app</h3>
+  <ion-card>
+
+    <ion-item *ngIf="user">
+      <ion-avatar item-left>
+        <img src="{{ user.picture }}">
+      </ion-avatar>
+      <h2>{{ user.nickname }}</h2>
+      <p>{{ user.email }}</p>
+    </ion-item>
+  
+  </ion-card>
 </ion-content>

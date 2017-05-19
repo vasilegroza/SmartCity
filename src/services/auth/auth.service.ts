@@ -1,8 +1,9 @@
 import {Storage} from '@ionic/storage'
 import {AuthHttp, JwtHelper, tokenNotExpired} from 'angular2-jwt'
 import {Injectable, NgZone}from '@angular/core'
-//import {Observable} from 'rxjs/Rx'
+import {Observable, Subject} from 'rxjs/Rx'
 import {Auth0Vars} from './auth0-variables';
+
 declare var Auth0: any;
 declare var Auth0Lock:any;
 // Avoid name not found warnings
@@ -33,19 +34,21 @@ export class AuthService {
     });
   storage: Storage = new Storage('localstorage');
   refreshSubscription: any;
-  user: Object;
+  _isAuth = new Subject<boolean>();
+  _user = new Subject<Object>();
+  user : any;
   zoneImpl: NgZone;
   accessToken: string;
-  idToken: string;
-  loging_info:string="empty";
-  constructor(private authHttp: AuthHttp, zone: NgZone) {
-    this.zoneImpl = zone;
+  idToken: string = null;
+  profilePromise: Promise<any> = this.storage.get('profile');
+  
+  constructor(private authHttp: AuthHttp) {
+    // this.zoneImpl = zone;
     // Check if there is a profile saved in local storage
     this.storage.get('profile').then(profile => {
       this.user = JSON.parse(profile);
     }).catch(error => {
       console.log(error);
-      this.loging_info = "error cannot get profile from storage";
     });
 
     this.storage.get('id_token').then(token => {
@@ -53,27 +56,23 @@ export class AuthService {
     }).catch(error=>{
         console.log(error);
         this.idToken = null;
-      this.loging_info += "error cannot get token from storage\n";
-        
     });
 
     this.lock.on('authenticated', authResult => {
       if (authResult && authResult.accessToken && authResult.idToken) {
     
-        this.loging_info += "logged in \n";
         console.log("login")
+        // console.log(this.user.email);
         this.storage.set('access_token', authResult.accessToken);
         this.storage.set('id_token', authResult.idToken);
         this.storage.set('refresh_token', authResult.refreshToken);
         this.accessToken = authResult.accessToken;
         this.idToken = authResult.idToken;
 
+        
         // Fetch profile information
         this.lock.getUserInfo(this.accessToken, (error, profile) => {
           if (error) {
-            // Handle error
-            this.loging_info += "error while getting user info\n";
-            
             alert(error);
             return;
           }
@@ -81,13 +80,15 @@ export class AuthService {
           profile.user_metadata = profile.user_metadata || {};
           this.storage.set('profile', JSON.stringify(profile));
           this.user = profile;
+          this._isAuth.next(this.authenticated());
+          this._user.next(profile);
+          
           console.log("saved user:", this.user)
-          this.loging_info += JSON.stringify(this.user);
         });
 
         this.lock.hide();
 
-        this.zoneImpl.run(() => this.user = authResult.profile);
+        // this.zoneImpl.run(() => this.user = authResult.profile);
         // // Schedule a token refresh
         //this.scheduleRefresh();
       }
@@ -96,7 +97,7 @@ export class AuthService {
   }
 
   public authenticated() { 
-    //  console.log(tokenNotExpired('id_token', this.idToken));
+    //console.log(tokenNotExpired('id_token', this.idToken));
     return tokenNotExpired('id_token', this.idToken);
   }
   
@@ -106,16 +107,27 @@ export class AuthService {
   }
   
   public logout() {
-      console.log("logout user:", this.user)
+      console.log("logout user:", this.user.email)
     this.storage.remove('profile');
     this.storage.remove('access_token');
     this.storage.remove('id_token');
     this.idToken = null;
     this.storage.remove('refresh_token');
-    this.zoneImpl.run(() => this.user = null);
-    this.loging_info += "user logout \n";
+    // this.zoneImpl.run(() => this.user = null);
+    // console.log("aici crapa")
+    // console.log(this._user)
+    this._user.next(null)
+    this._isAuth.next(this.authenticated());
+    
     
     // Unschedule the token refresh
    // this.unscheduleRefresh();
   }
+  public isAuthenticated():Observable<boolean>{
+    return this._isAuth.asObservable();
+  }
+  public getProfile():Observable<any>{
+    return this._user.asObservable();
+  }
 }
+

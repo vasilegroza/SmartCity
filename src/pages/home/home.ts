@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
+import { IonicPage, NavController, NavParams, MenuController } from 'ionic-angular';
+import { AuthService } from '../../services/auth/auth.service'
 /**
  * Generated class for the Home page.
  *
@@ -13,8 +13,16 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'home.html',
 })
 export class Home {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  user:Object
+  constructor(public navCtrl: NavController, 
+              public navParams: NavParams,
+              public menu:MenuController,
+              public auth:AuthService ) {
+    this.menu = menu;
+    this.menu.enable(true,"myMenu")
+    console.log("constructorHome", this.navParams.get("user"));
+    this.user = this.navParams.get("user");
+    console.log("HOME_PAGE",this.user);          
   }
 
   ionViewDidLoad() {
