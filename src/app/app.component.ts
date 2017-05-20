@@ -12,6 +12,8 @@ import { Home } from '../pages/home/home'
 import { Profile } from '../pages/profile/profile'
 import { ToDo } from '../pages/to-do/to-do'
 import { Settings } from '../pages/settings/settings'
+import { LocationPage } from  '../pages/location/location'
+
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { AuthService } from '../services/auth/auth.service'
@@ -44,7 +46,9 @@ export class MyApp implements OnInit,OnDestroy {
       { title: 'Profile', component:Profile, img: "assets/img/home.jpeg"},
       { title: 'To Do', component: ToDo, img: "assets/img/home.jpeg" },
       { title: 'Settings', component: Settings, img: "assets/img/home.jpeg" },
-      { title: 'Logout', component:null, img: "assets/img/home.jpeg"}
+      { title: 'Logout', component:null, img: "assets/img/home.jpeg"},
+      { title: 'Location', component:LocationPage, img: "assets/img/home.jpeg"}
+      
     ];
     
     

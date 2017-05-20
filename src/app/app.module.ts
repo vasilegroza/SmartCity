@@ -5,12 +5,6 @@ import { MyApp } from './app.component';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-// import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
-// import { ItemDetailsPage } from '../pages/item-details/item-details';
-// import { ListPage } from '../pages/list/list';
-
-//
-
 ///
 import { Home } from '../pages/home/home'
 import { Profile } from '../pages/profile/profile'
@@ -18,12 +12,14 @@ import { ToDo } from  '../pages/to-do/to-do'
 import { Settings } from '../pages/settings/settings'
 import { EventDetails } from '../pages/event-details/event-details'
 import { StartUpPage } from '../pages/start-up-page/start-up-page'
+import { LocationPage } from '../pages/location/location'
 // auth component
 import { HttpModule, Http} from '@angular/http'
 import { AuthConfig, AuthHttp } from 'angular2-jwt'
 import { AuthService } from '../services/auth/auth.service'
 
 import { Storage } from '@ionic/storage'
+import { Geolocation } from "@ionic-native/geolocation"
 
 let storage:Storage = new Storage('localstorage');
 export function getAuthHttp(http){
@@ -42,6 +38,7 @@ export function getAuthHttp(http){
     ToDo,
     Settings,
     EventDetails,
+    LocationPage
 
     //HelloIonicPage,
     // ItemDetailsPage,
@@ -50,7 +47,7 @@ export function getAuthHttp(http){
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    HttpModule
+    HttpModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -61,7 +58,7 @@ export function getAuthHttp(http){
     ToDo,
     Settings,
     EventDetails,
-
+    LocationPage
     //HelloIonicPage,
     // ItemDetailsPage,
     // ListPage
@@ -69,6 +66,7 @@ export function getAuthHttp(http){
   providers: [
     StatusBar,
     SplashScreen,
+    Geolocation,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthService,
     {
