@@ -20,6 +20,8 @@ import { AuthService } from '../services/auth/auth.service'
 
 import { Storage } from '@ionic/storage'
 import { Geolocation } from "@ionic-native/geolocation"
+import {DBMeter} from '@ionic-native/db-meter'
+import {SensorCollector} from '../providers/sensor-collector';
 
 let storage:Storage = new Storage('localstorage');
 export function getAuthHttp(http){
@@ -67,6 +69,8 @@ export function getAuthHttp(http){
     StatusBar,
     SplashScreen,
     Geolocation,
+    DBMeter,
+    SensorCollector,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthService,
     {

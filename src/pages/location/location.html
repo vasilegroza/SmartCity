@@ -7,6 +7,9 @@
 <ion-header>
 
   <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
     <ion-title>location</ion-title>
   </ion-navbar>
 
@@ -14,14 +17,25 @@
 
 
 <ion-content padding>
-  {{debug}}
+  <pre>{{sensorCollector.debug}}</pre>
   <div>Is App:{{isApp}}</div>
+  <button ion-button (click)="watchLocation()">Start Location</button>
   <div *ngIf="coord">
+    <div>Number updates: {{sensorCollector.locationChanges}}</div>
     <div> Coordinates are:</div>
+    <div> Latitude: {{coord.latitude}}</div>
     <div> Longitude: {{coord.longitude}}</div>
-    <div> Longitude: {{coord.latitude}}</div>
     <div> Accuracy: {{coord.accuracy}}</div>
+    
+    
   </div>
-  
+  <button ion-button (click)="stopWatchingLocation()">Stop Location</button>
+  <button ion-button (click)="getDecibelMeasure()">Start dbMeter</button>
+
+  <div *ngIf="dbRecord">
+    <div> Decibel Last value:{{dbRecord.lastValue}}</div>
+    <div> DbIteration {{dbRecord.iterations}}</div>
+    <div>DbAverage = {{dbRecord.values}} / {{dbRecord.iterations}} = {{dbRecord.average}}</div>
+  </div>
   
 </ion-content>

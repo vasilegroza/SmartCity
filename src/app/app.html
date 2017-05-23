@@ -11,10 +11,12 @@
      <ion-list>
     
       <ion-item >
-        user image
-        <!--<ion-avatar item-center *ngIf="user">
-            <img src="{{ user.picture }}">
-        </ion-avatar>-->
+        <div item-center *ngIf="user">
+              <ion-avatar class="user-avatar" item-center>
+                <img src="{{ user.picture }}">
+            </ion-avatar>
+            {{ user.nickname }}
+        </div>
 
       </ion-item>
        

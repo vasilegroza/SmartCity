@@ -50,6 +50,25 @@ Make sure to install the android-23 version and confirm it exists in ~/Android/S
 ```bash
 npm install -g cordova ionic
 ```
+# Ionic plugins
+
+## DB Meter
+    This plugin will be used to get decibel values from audio input
+
+```bash
+$ ionic cordova plugin add cordova-plugin-dbmeter
+$ npm install --save @ionic-native/db-meter
+```
+
+## Geolocation
+    This will be used to get location from users devices
+
+```bash
+$ ionic cordova plugin add cordova-plugin-geolocation
+$ npm install --save @ionic-native/geolocation
+```
+
+
 
 # Running aplication
 
@@ -57,4 +76,5 @@ npm install -g cordova ionic
 npm install 
 ionic serve
 ```
+
 

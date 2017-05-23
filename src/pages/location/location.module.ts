@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { LocationPage } from './location';
-
 @NgModule({
   declarations: [
     LocationPage,
@@ -11,6 +10,8 @@ import { LocationPage } from './location';
   ],
   exports: [
     LocationPage
+  ],
+  providers:[
   ]
 })
 export class LocationModule {}

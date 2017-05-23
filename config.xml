@@ -85,6 +85,7 @@
         <variable name="ANDROID_HOST" value="utilizatorvalid.auth0.com" />
         <variable name="ANDROID_PATHPREFIX" value="/cordova/com.ionicframework.sc511742/callback" />
     </plugin>
+    <plugin name="cordova-plugin-dbmeter" spec="^1.1.2" />
     <plugin name="cordova-plugin-device" spec="1.1.4" />
     <plugin name="cordova-plugin-geolocation" spec="^2.4.3" />
     <plugin name="cordova-plugin-inappbrowser" spec="^1.7.1" />

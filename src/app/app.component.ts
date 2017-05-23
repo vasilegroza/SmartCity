@@ -91,8 +91,9 @@ export class MyApp implements OnInit,OnDestroy {
       console.log('app.component loadAuth',isAuth)
     })
     this.profileSubscription = this.auth.getProfile().subscribe(profile=>{
+          console.log("HERE",profile)
           if(this.authenticated){
-              console.log("app.component loadProfile", profile.email);
+              console.log("app.component Change profile", profile);
               this.user = profile;
               //this.navCtrl.setRoot(Home,{user: JSON.stringify(profile)});                
         
