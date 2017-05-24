@@ -1,6 +1,6 @@
 # Android SDK setup
-
-## Install Java
+## Setup for Linux 
+### Install Java
 
 ```bash
 sudo apt-get update
@@ -18,7 +18,7 @@ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 
 
-## Install Android Studio
+### Install Android Studio
 Download ZIP archive for Linux from: https://developer.android.com/studio/install.html
 1. move the .zip to /opt
 2. extract it
@@ -37,6 +37,21 @@ Run `android`, install the images (atom, etc) and then navigate to Tools -> Mana
 Make sure to install the android-23 version and confirm it exists in ~/Android/Sdk/platforms/
 
 
+## Setup for Windows
+### Install Java
+
+Install the most recent [Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (NOT just the JRE).
+
+Next, create an environment variable for JAVA_HOME pointing to the root folder where the Java JDK was installed. So, if you installed the JDK into C:\Program Files\Java\jdk7, set JAVA_HOME to be this path. After that, add the JDK's bin directory to the PATH variable as well. Following the previous assumption, this should be either %JAVA_HOME%\bin or the full path C:\Program Files\Java\jdk7\bin
+
+### Android SDK
+Install [Android Studio](https://developer.android.com/studio/index.html). Detailed installation instructions are on Android's developer site.
+
+Set the ANDROID_HOME (C:\Users\<username>\AppData\Local\Android\Sdk) environment variable to the location of your Android SDK installation
+It is also recommended that you add the Android SDK's tools, tools/bin, and platform-tools directories to your PATH like this \
+%ANDROID_HOME%\tools \
+...
+
 
 
 # Ionic setup
@@ -50,6 +65,10 @@ Make sure to install the android-23 version and confirm it exists in ~/Android/S
 ```bash
 npm install -g cordova ionic
 ```
+
+
+
+
 # Ionic plugins
 
 ## DB Meter
@@ -71,6 +90,7 @@ $ npm install --save @ionic-native/geolocation
 
 
 # Running aplication
+First of all please follow the instruction for setup environement on your pc and only after run the code bellow 
 
 ```bash
 npm install 

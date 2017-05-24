@@ -76,28 +76,23 @@ export class AuthService {
             alert(error);
             return;
           }
-
           profile.user_metadata = profile.user_metadata || {};
           this.storage.set('profile', JSON.stringify(profile));
           this.user = profile;
           this._isAuth.next(this.authenticated());
           this._user.next(profile);
           
-          console.log("saved user:", this.user)
+          console.log("saved user:", this.user.email)
         });
 
         this.lock.hide();
-
-        // this.zoneImpl.run(() => this.user = authResult.profile);
-        // // Schedule a token refresh
-        //this.scheduleRefresh();
       }
 
     });    
   }
 
   public authenticated() { 
-    //console.log(tokenNotExpired('id_token', this.idToken));
+    // console.log(this.idToken, tokenNotExpired('id_token', this.idToken));
     return tokenNotExpired('id_token', this.idToken);
   }
   
@@ -113,15 +108,8 @@ export class AuthService {
     this.storage.remove('id_token');
     this.idToken = null;
     this.storage.remove('refresh_token');
-    // this.zoneImpl.run(() => this.user = null);
-    // console.log("aici crapa")
-    // console.log(this._user)
     this._user.next(null)
     this._isAuth.next(this.authenticated());
-    
-    
-    // Unschedule the token refresh
-   // this.unscheduleRefresh();
   }
   public isAuthenticated():Observable<boolean>{
     return this._isAuth.asObservable();

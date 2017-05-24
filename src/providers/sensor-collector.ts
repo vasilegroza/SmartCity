@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Geolocation, Coordinates, Geoposition } from '@ionic-native/geolocation';
+import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 
-import  { Platform } from 'ionic-angular'
-import {Observable, Subject} from 'rxjs/Rx'
+import { Platform } from 'ionic-angular'
+import { Observable, Subject } from 'rxjs/Rx'
 import { ISubscription } from "rxjs/Subscription";
 
 import { DBMeter } from '@ionic-native/db-meter'
 import { DbFrame } from '../models/db-frame'
-
+import DecibelMeter from 'decibel-meter'
+import { SensorVars } from './sensor-variabls'
 /*
   Generated class for the SensorCollector provider.
 
@@ -16,115 +17,140 @@ import { DbFrame } from '../models/db-frame'
 */
 @Injectable()
 export class SensorCollector {
-  
-  positionSubscription: ISubscription;
-  dbMeterSubscription : ISubscription;
+  lastPosition: Geoposition;
 
-  coordinates: Coordinates;
-  isApp:boolean;
-  
-  watch:Observable<Geoposition>;
+  positionSubscription: ISubscription;
+  dbMeterSubscription: ISubscription;
+
+  isApp: boolean;
+
+  watch: Observable<Geoposition>;
   locationChanges: number = 1;
-  
-  debug :string;
+
+  debug: string;
   dist: number = 0;
-  dbValue:number;
-  dbAverage:number = 0;
-  dbValues:number = 0;
-  dbIterations:number = 0;
-  
+  dbValue: number;
+  dbAverage: number = 0;
+  dbValues: number = 0;
+  dbIterations: number = 0;
+
+  webDbMeter: any;
+  webMicrophoneSource: any;
   _geoposition = new Subject<Geoposition>();
   constructor(private geolocation: Geolocation,
-              public platform: Platform,
-              private dbMeter: DBMeter) {
-          
-
+    public platform: Platform,
+    private dbMeter: DBMeter) {
     console.log('Hello SensorCollector Provider');
-
-    if(this.platform.is('core')||this.platform.is('mobileweb')){
+    if (this.platform.is('core') || this.platform.is('mobileweb')) {
+      //i'm on browser
       this.isApp = false;
-    }
-    else{
+      this.prepareWebDbMeter();
+    } else {
       this.isApp = true;
     }
+    this.initiateGeolocation();
   }
+  prepareWebDbMeter() {
+    //set up new DecibelMeter
+    this.webDbMeter = new DecibelMeter('');
+    //getting microphoneSource
+    this.webDbMeter.sources.then(sources => {
+      console.log("Store default sources[0]", sources);
+      this.webMicrophoneSource = sources[0];
+    })
 
-  recordDecibel(timeout:number):Promise<DbFrame>{
-    return new Promise((resolve,reject)=>{
+    this.webDbMeter.on('connect', (source, previous) => {
+      // console.log(`Connected to ${source.label}`);
+    })
+
+    // callback for decibel-meter on value changed on microphone :)))
+    this.webDbMeter.on('sample', (dB, percent, value) => {
+      // console.log(dB, percent, value);
+      if (percent != 0 && value != 0) {
+        this.dbValues += percent;
+        this.dbIterations += 1;
+        this.dbValue = percent;
+        this.dbAverage = this.dbValues / this.dbIterations;
+      }
+    });
+  }
+  recordDecibel(timeout: number): Promise<DbFrame> {
+    return new Promise((resolve, reject) => {
       this.initiateDbMeter();
-      setTimeout(()=>{
+      setTimeout(() => {
+
+        var noise_info = this.dbValueToNoiseLevel(this.dbAverage);
         resolve(new DbFrame(
-                this.dbAverage,
-                this.dbIterations,
-                this.dbValues,
-                this.dbValue))
+          this.dbAverage,
+          this.dbIterations,
+          this.dbValues,
+          this.dbValue,
+          noise_info))
         this.terminateDbMeter();
-      },timeout)
+      }, timeout)
     })
   }
-  resetFrame(){
-    this.dbAverage=0;
+  resetFrame() {
+    this.dbAverage = 0;
     this.dbIterations = 0;
     this.dbValues = 0;
     this.dbValue = 0;
   }
-  
-  initiateDbMeter(){
-    if(this.isApp)
-    {
-      this.resetFrame();
-      this.dbMeterSubscription = this.dbMeter.start().subscribe((data)=>{
-       
+
+  initiateDbMeter() {
+    this.resetFrame();
+    if (this.isApp) {
+      this.dbMeterSubscription = this.dbMeter.start().subscribe((data) => {
+
         this.dbValue = data;
-        this.dbIterations +=1;
+        this.dbIterations += 1;
         this.dbValues += data;
         this.dbAverage = this.dbValues / this.dbIterations;
-       });
+      });
+    } else {
+      this.webDbMeter.connect(this.webMicrophoneSource);
+      this.webDbMeter.listen();
     }
   }
-  terminateDbMeter(){
-    if(this.dbMeterSubscription)
-    {   
-        console.log('Terminate dbMetter \n');
-        this.dbMeterSubscription.unsubscribe();
-        this.dbMeter.isListening().then((isListening:boolean)=>{
-          console.log("dbMeter isListening"+isListening);  
-        });
-        this.dbMeter.delete().then(()=>{
-          console.log("Deleted dbMeter instance\n");
-        }).catch(err=>{
-          console.log("Error occured while deleting instance of dbMeter");
-        })
-    }   
+  terminateDbMeter() {
+    if (this.dbMeterSubscription) {
+      this.dbMeterSubscription.unsubscribe();
+      this.dbMeter.delete().then(() => {
+        console.log("Deleted dbMeter instance\n");
+      }).catch(err => {
+        console.log("Error occured while deleting instance of dbMeter");
+      })
+    }
+    if (this.dbMeter) {
+      this.webDbMeter.stopListening();
+      this.webDbMeter.disconnect()
+    }
   }
-  initiateGeolocation(){
-    console.log("INIT LOCATION SEERVICE")
-    this.debug +="INIT LOCATION SEERVICE";
-    if(this.isApp){
-        this.geolocation.getCurrentPosition().then((position) => {
-          // resp.coords.latitude
-          // resp.coords.longitude
-          this.coordinates = position.coords;
-        }).catch((error) => {
-            console.log('Error getting location', error);
-        });
+  initiateGeolocation() {
+    this.debug += "INIT LOCATION SEERVICE\n";
+    if (this.isApp) {
+      this.geolocation.getCurrentPosition().then((position) => {
+        this.lastPosition = position;
+      }).catch((error) => {
+        console.log('Error getting location', error);
+      });
+
+      if (this.watch)
+        return;
 
       this.watch = this.geolocation.watchPosition();
-      
-      this.positionSubscription = this.watch.filter((p)=> p.coords !== undefined).subscribe((position)=>{
-          if(position.coords.latitude !== this.coordinates.latitude ||
-              position.coords.longitude !== this.coordinates.longitude ||
-              position.coords.accuracy < this.coordinates.accuracy)
-          {
-            // this.debug+=JSON.stringify(position) + '\n';
-            this.coordinates = position.coords;
-            this.locationChanges +=1;
-            console.log(position, this.locationChanges);
-            this._geoposition.next(position);
-          }
-          // }
-    },(error)=>{
-        switch(error.code){
+      this.positionSubscription = this.watch.filter((p) => p.coords !== undefined).subscribe((position) => {
+        if (position.coords.latitude !== this.lastPosition.coords.latitude ||
+          position.coords.longitude !== this.lastPosition.coords.longitude ||
+          position.coords.accuracy < this.lastPosition.coords.accuracy) {
+          this.debug += JSON.stringify({ long: position.coords.longitude, lat: position.coords.latitude }) + '\n';
+          this.lastPosition = position;
+          this.locationChanges += 1;
+          console.log(position, this.locationChanges);
+          this._geoposition.next(position);
+        }
+      }, (error) => {
+        switch (error.code) {
           case error.PERMISSION_DENIED:
             this.debug = "User denied the request for Geolocation"
             break
@@ -137,55 +163,69 @@ export class SensorCollector {
         }
       })
     }
-    else{
-      // this.debug = "initated geolocation for web";
+    else {
       if (!navigator.geolocation) {
-          console.log("Geolocation is not supported in your browser")
-        // this.debug ='Geolocation is not supported in your browser';
-        return ;
+        console.log("Geolocation is not supported in your browser")
+        return;
       }
-      navigator.geolocation.watchPosition((position)=>{
-        if (!this.coordinates){ 
-          console.log("asaas",position)
-          this.coordinates = position.coords;
+      navigator.geolocation.watchPosition((position) => {
+        if (!this.lastPosition) {
+          this.lastPosition = position;
           this._geoposition.next(position);
-      } 
-        if (this.coordinates.latitude != position.coords.latitude ||
-            this.coordinates.longitude!= position.coords.longitude){
+        }
+        if (this.lastPosition.coords.latitude != position.coords.latitude ||
+          this.lastPosition.coords.longitude != position.coords.longitude) {
+          this.locationChanges += 1;
+          this.lastPosition = position;
+          this._geoposition.next(position);
+          console.log(position, this.locationChanges);
 
-            this.coordinates = position.coords;
-            this.locationChanges += 1;
-            this._geoposition.next(position);
-            console.log(position, this.locationChanges);
-            // this.dist = (this.distance(position.coords, this.coord,'K'));
-
-      }
-    },(error)=>{
-        switch(error.code) {
-        case error.PERMISSION_DENIED:
+        }
+      }, (error) => {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
             console.log("User denied the request for Geolocation.")
             break;
-        case error.POSITION_UNAVAILABLE:
+          case error.POSITION_UNAVAILABLE:
             console.log("Location information is unavailable.")
-            // this.debug = "Location information is unavailable."
             break;
-        case error.TIMEOUT:
+          case error.TIMEOUT:
             console.log("The request to get user location timed out.");
-            // this.debug = "The request to get user location timed out."
             break;
-    }
+        }
       })
     }
   }
-  terminateGeolocation(){
-    if(this.positionSubscription)
+  terminateGeolocation() {
+    if (this.positionSubscription) {
       this.positionSubscription.unsubscribe();
-    this.coordinates = null;
+      this.watch = null;
+    }
+    this.lastPosition = null;
   }
 
-  public getLocation():Observable<Geoposition>{
+
+  public getLocation(): Observable<Geoposition> {
+    if (this.lastPosition) {
+      setTimeout(() => {
+        this._geoposition.next(this.lastPosition)
+      },
+        2000)
+    }
     return this._geoposition.asObservable();
   }
 
+  dbValueToNoiseLevel(dbValue: number): Object {
+    let closestValue = 10,
+      minDiff = Math.abs(dbValue - 10)
+    SensorVars.array_decibels.forEach(element => {
+      if (Math.abs(dbValue - element) <= minDiff) {
+        closestValue = element;
+        minDiff = Math.abs(dbValue - element)
+      }
+    });
+    console.log(`noise level ${closestValue}:`, SensorVars.noiseLevels[closestValue])
+    return SensorVars.noiseLevels[closestValue] || {};
+  }
 
 }

@@ -21,9 +21,7 @@
       </ion-item>
        
       <ion-item *ngFor="let p of pages" (click)="openPage(p)">
-          <ion-thumbnail item-left>
-            <img src="{{p.img}}">
-          </ion-thumbnail>
+        <ion-icon name="{{p.icon}}"></ion-icon> 
         {{p.title}}
       </ion-item>
     </ion-list>

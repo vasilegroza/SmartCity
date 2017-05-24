@@ -3,7 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { Geolocation, Coordinates, Geoposition } from '@ionic-native/geolocation';
 
-import  { Platform } from 'ionic-angular'
+import { Platform } from 'ionic-angular'
 import { Observable } from 'rxjs/Observable'
 import { ISubscription } from "rxjs/Subscription";
 
@@ -21,69 +21,89 @@ import { DbFrame } from '../../models/db-frame'
   templateUrl: 'location.html',
 })
 export class LocationPage implements OnInit, OnDestroy {
-  
+
   positionSubscription: ISubscription;
+  positionSubscription1: ISubscription;
+
   coord: Coordinates;
-  debug:string='empty\n';
-  isApp:boolean;
-  watch:Observable<Geoposition>;
+  coord1: Coordinates;
+  debug: string = 'empty\n';
+  isApp: boolean;
+  watch: Observable<Geoposition>;
   locationChanges: number = 1;
   dist: number = 0;
-  dbRecord :DbFrame;
-  
-  constructor(public navCtrl: NavController, 
-              public navParams: NavParams,
-              private geolocation: Geolocation,
-              public platform: Platform,
-              private sensorCollector: SensorCollector ) {
-    if(this.platform.is('core')||this.platform.is('mobileweb')){
+  dbRecord: DbFrame;
+
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
+    private geolocation: Geolocation,
+    public platform: Platform,
+    private sensorCollector: SensorCollector) {
+    if (this.platform.is('core') || this.platform.is('mobileweb')) {
       this.isApp = false;
     }
-    else{
+    else {
       this.isApp = true;
 
-      
-    }
-   
-    
-  }
-  ngOnInit(){
-    console.log("init Location")
-    
-  }
-  ngOnDestroy(){
-    console.log("destroy Location")
-    if(this.positionSubscription)
-      this.sensorCollector.terminateGeolocation();
-      this.positionSubscription.unsubscribe();
-}
 
-  getDecibelMeasure(){
-    this.sensorCollector.recordDecibel(10000).then((recordResult)=>{
-        this.dbRecord = recordResult;
-        this.debug +="\n***\n after 10000=>"+JSON.stringify(recordResult);
-      })
+    }
   }
-  watchLocation(){
-    
-    if (!this.positionSubscription)
-      {
-        this.debug+="Starging to watch location:\n"
-        this.positionSubscription = this.sensorCollector.getLocation().subscribe(position=>{
+  ngOnInit() {
+    console.log("init Location Page")
+  }
+  ngOnDestroy() {
+    console.log("destroy Location")
+    if (this.positionSubscription || this.positionSubscription1)
+      if (this.positionSubscription)
+        this.positionSubscription.unsubscribe();
+
+    if (this.positionSubscription1)
+      this.positionSubscription1.unsubscribe();
+  }
+
+  getDecibelMeasure() {
+    this.sensorCollector.recordDecibel(10000).then((recordResult) => {
+      this.dbRecord = recordResult;
+      this.debug += "\n***\n after 10000=>" + JSON.stringify(recordResult);
+    })
+  }
+  watchLocation() {
+
+    if (!this.positionSubscription) {
+      this.debug += "Starging to watch location:\n"
+      this.positionSubscription = this.sensorCollector.getLocation().subscribe(position => {
         this.coord = position.coords;
       })
-      this.sensorCollector.initiateGeolocation();
-      }
+    }
 
   }
 
-  stopWatchingLocation(){
-    if(this.positionSubscription)
-    {
+  stopWatchingLocation() {
+    if (this.positionSubscription) {
       console.log("StopWatchingLocation")
       this.positionSubscription.unsubscribe();
       this.positionSubscription = null;
-      this.sensorCollector.terminateGeolocation();
+    }
+  }
+  watchLocation1() {
+
+    if (!this.positionSubscription1) {
+      this.debug += "Starging to watch location1:\n"
+      this.positionSubscription1 = this.sensorCollector.getLocation().subscribe(position => {
+        this.coord1 = position.coords;
+      })
+      //this.sensorCollector.initiateGeolocation();
+    }
+
+  }
+
+  stopWatchingLocation1() {
+    if (this.positionSubscription1) {
+      console.log("StopWatchingLocation1")
+      this.positionSubscription1.unsubscribe();
+      this.positionSubscription1 = null;
+      // this.sensorCollector.terminateGeolocation();
+      // contor se service users ++ --
     }
   }
 
