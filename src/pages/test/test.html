@@ -34,20 +34,7 @@
     </div>
     <button ion-button (click)="stopWatchingLocation()">destroy Subscription 1</button>
   </div>
-  <div>
-    <button ion-button (click)="watchLocation1()">Subscribe for location 2</button>
-    <div *ngIf="coord1">
-      <div>Number updates: {{sensorCollector.locationChanges}}</div>
-      <div> Coordinates are:</div>
-      <div> Latitude: {{coord1.latitude}}</div>
-      <div> Longitude: {{coord1.longitude}}</div>
-      <div> Accuracy: {{coord1.accuracy}}</div>
-      
-      
-    </div>
-    <button ion-button (click)="stopWatchingLocation1()">destroy Subscription 2</button>
-  </div>
-  
+    
   <button ion-button (click)="getDecibelMeasure()">Start dbMeter</button>
 
   <div *ngIf="dbRecord">

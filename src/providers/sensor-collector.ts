@@ -27,7 +27,7 @@ export class SensorCollector {
   watch: Observable<Geoposition>;
   locationChanges: number = 1;
 
-  debug: string;
+  debug: string="";
   dist: number = 0;
   dbValue: number;
   dbAverage: number = 0;
@@ -127,12 +127,15 @@ export class SensorCollector {
     }
   }
   initiateGeolocation() {
-    this.debug += "INIT LOCATION SEERVICE\n";
     if (this.isApp) {
+      
+      this.debug += "get LOCATION from Mobile\n";
+      this.debug+= JSON.stringify(this.geolocation.getCurrentPosition.toString());
       this.geolocation.getCurrentPosition().then((position) => {
         this.lastPosition = position;
+         this._geoposition.next(position);
       }).catch((error) => {
-        console.log('Error getting location', error);
+        this.debug+=`Error getting location ${error}\n`;
       });
 
       if (this.watch)

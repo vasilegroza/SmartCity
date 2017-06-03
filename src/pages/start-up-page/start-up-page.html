@@ -16,9 +16,12 @@
 
 <!--<ion-content  class="has-header" padding>-->
   
-  <ion-content  padding *ngIf="!authenticated">
-  <pre>backround image</pre>
-  <button ion-button block (click)="login()">Login</button>
+<ion-content class="startUpPage"  padding *ngIf="!authenticated">
+  <div id="background">
+  <img src="assets/img/letstart.jpg" class="stretch">
+  </div>
+
+  <button ion-button round  outline color="secondary"  (click)="login()">Login</button>
   
 </ion-content>
 

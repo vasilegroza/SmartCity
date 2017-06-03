@@ -12,11 +12,13 @@ import { ToDo } from  '../pages/to-do/to-do'
 import { Settings } from '../pages/settings/settings'
 import { EventDetails } from '../pages/event-details/event-details'
 import { StartUpPage } from '../pages/start-up-page/start-up-page'
-import { LocationPage } from '../pages/location/location'
+import { TestPage } from '../pages/test/test'
 // auth component
 import { HttpModule, Http} from '@angular/http'
 import { AuthConfig, AuthHttp } from 'angular2-jwt'
 import { AuthService } from '../services/auth/auth.service'
+import { ServerEmmiter } from '../services/server-emmiter/server-emmiter.service'
+
 
 import { Storage } from '@ionic/storage'
 import { Geolocation } from "@ionic-native/geolocation"
@@ -40,7 +42,7 @@ export function getAuthHttp(http){
     ToDo,
     Settings,
     EventDetails,
-    LocationPage
+    TestPage
 
     //HelloIonicPage,
     // ItemDetailsPage,
@@ -60,7 +62,7 @@ export function getAuthHttp(http){
     ToDo,
     Settings,
     EventDetails,
-    LocationPage
+    TestPage,
     //HelloIonicPage,
     // ItemDetailsPage,
     // ListPage
@@ -71,6 +73,7 @@ export function getAuthHttp(http){
     Geolocation,
     DBMeter,
     SensorCollector,
+    ServerEmmiter,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthService,
     {

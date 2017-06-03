@@ -3,17 +3,17 @@
 ### Install Java
 
 ```bash
-sudo apt-get update
-sudo dpkg --add-architecture i386
-sudo apt-get install libbz2-1.0:i386
-sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1
-sudo apt-get install openjdk-8-jdk openjdk-8-jre
-```W
+$ sudo apt-get update
+$ sudo dpkg --add-architecture i386
+$ sudo apt-get install libbz2-1.0:i386
+$ sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1
+$ sudo apt-get install openjdk-8-jdk openjdk-8-jre
+```
 
 Add JAVA_HOME to path via ~/.bashrc
 
 ```bash
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+$ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ```
 
 
@@ -29,8 +29,8 @@ Now the android sdk is installed to ~/Android/Sdk
 It's preferred to add ~/Android/Sdk folders to your path:
 
 ```bash
-export PATH=${PATH}:~/Android/Sdk/tools
-export PATH=${PATH}:~/Android/Sdk/platform-tools
+$ export PATH=${PATH}:~/Android/Sdk/tools
+$ export PATH=${PATH}:~/Android/Sdk/platform-tools
 ```
 
 Run `android`, install the images (atom, etc) and then navigate to Tools -> Manage AVDs and create a new image
@@ -63,7 +63,7 @@ It is also recommended that you add the Android SDK's tools, tools/bin, and plat
 # Install latest cordova and ionic from npm
 
 ```bash
-npm install -g cordova ionic
+$ npm install -g cordova ionic
 ```
 
 
@@ -93,8 +93,8 @@ $ npm install --save @ionic-native/geolocation
 First of all please follow the instruction for setup environement on your pc and only after run the code bellow 
 
 ```bash
-npm install 
-ionic serve
+$ npm install 
+$ ionic serve
 ```
 
 
