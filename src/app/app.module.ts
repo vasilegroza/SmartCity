@@ -8,13 +8,16 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 ///
 import { Home } from '../pages/home/home'
 import { Profile } from '../pages/profile/profile'
-import { ToDo } from  '../pages/to-do/to-do'
+import { ToDo } from '../pages/to-do/to-do'
 import { Settings } from '../pages/settings/settings'
 import { EventDetails } from '../pages/event-details/event-details'
 import { StartUpPage } from '../pages/start-up-page/start-up-page'
 import { TestPage } from '../pages/test/test'
+import { EventListPage } from '../pages/event-list/event-list'
+import { EventFetcherProvider } from '../providers/event-fetcher/event-fetcher';
+
 // auth component
-import { HttpModule, Http} from '@angular/http'
+import { HttpModule, Http } from '@angular/http'
 import { AuthConfig, AuthHttp } from 'angular2-jwt'
 import { AuthService } from '../services/auth/auth.service'
 import { ServerEmmiter } from '../services/server-emmiter/server-emmiter.service'
@@ -22,13 +25,22 @@ import { ServerEmmiter } from '../services/server-emmiter/server-emmiter.service
 
 import { Storage } from '@ionic/storage'
 import { Geolocation } from "@ionic-native/geolocation"
-import {DBMeter} from '@ionic-native/db-meter'
-import {SensorCollector} from '../providers/sensor-collector';
+import { DBMeter } from '@ionic-native/db-meter'
+import { SensorCollector } from '../providers/sensor-collector';
 
-let storage:Storage = new Storage('localstorage');
-export function getAuthHttp(http){
+
+// css
+import { ParallaxHeaderDirective } from '../directives/parallax-header/parallax-header';
+
+
+import { CityProvider } from '../providers/city/city';
+import { WeatherComponent } from '../components/weather/weather';
+
+
+let storage: Storage = new Storage('localstorage');
+export function getAuthHttp(http) {
   return new AuthHttp(new AuthConfig({
-    globalHeaders: [{'Accept': 'application/json'}],
+    globalHeaders: [{ 'Accept': 'application/json' }],
     tokenGetter: (() => storage.get('id_token'))
   }), http);
 }
@@ -42,7 +54,10 @@ export function getAuthHttp(http){
     ToDo,
     Settings,
     EventDetails,
-    TestPage
+    TestPage,
+    EventListPage,
+    ParallaxHeaderDirective,
+    WeatherComponent,
 
     //HelloIonicPage,
     // ItemDetailsPage,
@@ -63,6 +78,7 @@ export function getAuthHttp(http){
     Settings,
     EventDetails,
     TestPage,
+    EventListPage,
     //HelloIonicPage,
     // ItemDetailsPage,
     // ListPage
@@ -74,13 +90,15 @@ export function getAuthHttp(http){
     DBMeter,
     SensorCollector,
     ServerEmmiter,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
     AuthService,
     {
       provide: AuthHttp,
-      useFactory:getAuthHttp,
+      useFactory: getAuthHttp,
       deps: [Http]
-    }
+    },
+    EventFetcherProvider,
+    CityProvider,
   ]
 })
-export class AppModule {}
+export class AppModule { }

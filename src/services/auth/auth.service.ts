@@ -61,9 +61,9 @@ export class AuthService {
     this.lock.on('authenticated', authResult => {
       if (authResult && authResult.accessToken && authResult.idToken) {
     
-        console.log("login")
+        // console.log("login")
         // console.log(this.user.email);
-        console.log("DECODED token:",this.jwtHelper.decodeToken(authResult.idToken));
+        // console.log("DECODED token:",this.jwtHelper.decodeToken(authResult.idToken));
         this.storage.set('access_token', authResult.accessToken);
         this.storage.set('id_token', authResult.idToken);
         this.storage.set('refresh_token', authResult.refreshToken);

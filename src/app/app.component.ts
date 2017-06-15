@@ -12,7 +12,8 @@ import { Home } from '../pages/home/home'
 import { Profile } from '../pages/profile/profile'
 import { ToDo } from '../pages/to-do/to-do'
 import { Settings } from '../pages/settings/settings'
-import { TestPage } from '../pages/test/test'
+import { EventListPage } from '../pages/event-list/event-list'
+
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -44,10 +45,10 @@ export class MyApp implements OnInit, OnDestroy {
     this.pages = [
       { title: 'Home', component: Home, icon: "home" },
       { title: 'Profile', component: Profile, icon: "person" },
+      { title: "Events Nearby", component: EventListPage, icon:"clipboard"},
       { title: 'To Do', component: ToDo, icon: "list" },
       { title: 'Settings', component: Settings, icon: "settings" },
-      { title: 'Logout', component: null, icon: "log-out" },
-      { title: 'TestingPage', component: TestPage, icon: "build" }
+      { title: 'Logout', component: null, icon: "log-out" }
 
     ];
   }

@@ -1,5 +1,4 @@
-<ion-menu id ="myMenu" [content]="content">
-
+<ion-menu id ="myMenu" [content]="content" fullscreen >
   <ion-header>
     <ion-toolbar>
       <ion-title>Smart City</ion-title>
@@ -9,7 +8,6 @@
   <ion-content>
     
      <ion-list>
-    
       <ion-item >
         <div item-center *ngIf="user">
               <ion-avatar class="user-avatar" item-center>
@@ -17,7 +15,6 @@
             </ion-avatar>
             {{ user.nickname }}
         </div>
-
       </ion-item>
        
       <ion-item *ngFor="let p of pages" (click)="openPage(p)">

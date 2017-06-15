@@ -1,32 +1,33 @@
-<!--
-  Generated template for the Home page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
 
   <ion-navbar>
-    <button ion-button menuToggle>
+    <button ion-button menuToggle >
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Home</ion-title>
   </ion-navbar>
 
 </ion-header>
-
-
-<ion-content padding>
-  <h3>Welcome to Smart City app</h3>
-  <ion-card>
-
-    <ion-item *ngIf="user">
-      <ion-avatar item-left>
-        <img src="{{ user.picture }}">
-      </ion-avatar>
-      <h2>{{ user.nickname }}</h2>
-      <p>{{ user.email }}</p>
-    </ion-item>
-  
-  </ion-card>
+ 
+<ion-content  fullscreen parallax-header>
+ 
+    <div class="header-image"></div>
+ 
+    <div class="main-content">
+      
+      <div *ngIf="coord">
+        <div>Number updates: {{sensorCollector.locationChanges}}</div>
+        <div> Coordinates are:</div>
+        <div> Latitude: {{coord.latitude}}</div>
+        <div> Longitude: {{coord.longitude}}</div>
+        <div> Accuracy: {{coord.accuracy}}</div>
+        
+        
+      </div>
+      <pre>
+        {{mgrs_currentLocation}}
+        {{debug}}
+      </pre>
+    </div>
+ 
 </ion-content>

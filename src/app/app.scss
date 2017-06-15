@@ -21,3 +21,20 @@ max-width: 100px !important;  //any size
 max-height: 100px !important; //any size 
 }
 
+  
+ion-menu{
+    opacity: 0.9;
+    box-shadow: 0px 1px 13px 1px rgba(0,0,0,0.77);
+}
+.blur_menu{
+  width: auto;
+  height: inherit;
+  -webkit-filter: blur(15px);
+  -moz-filter: blur(15px);
+  -o-filter: blur(15px);
+  -ms-filter: blur(15px);
+  filter: blur(15px);
+  background-color: #ccc;
+}
+
+

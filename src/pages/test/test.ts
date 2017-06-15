@@ -31,21 +31,23 @@ export class TestPage implements OnInit, OnDestroy {
   positionSubscription1: ISubscription;
 
   coord: Coordinates;
-  mgrs_currentLocation :String="";
-  mgrs_lastLocation :String="";
+  mgrs_currentLocation: String = null;
+  mgrs_lastLocation: String = null;
   debug: string = 'empty\n';
   isApp: boolean;
   watch: Observable<Geoposition>;
   locationChanges: number = 1;
   dist: number = 0;
   dbRecord: DbFrame;
-
+  sendNoise: boolean = false;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private geolocation: Geolocation,
     public platform: Platform,
     private sensorCollector: SensorCollector,
     public serverEmmiter: ServerEmmiter) {
+
+
     if (this.platform.is('core') || this.platform.is('mobileweb')) {
       this.isApp = false;
     }
@@ -54,7 +56,7 @@ export class TestPage implements OnInit, OnDestroy {
 
 
     }
-    
+
   }
   ngOnInit() {
     console.log("init Location Page")
@@ -102,61 +104,75 @@ export class TestPage implements OnInit, OnDestroy {
 
     if (!this.positionSubscription) {
       this.debug += "Starting to watch location:\n"
+       this.measureNoise(this.mgrs_currentLocation);
+       
+       setInterval(() => {
+         console.log("FROM INTERVAL", new Date())
+        },
+          60000);
       this.positionSubscription = this.sensorCollector.getLocation().subscribe(position => {
         this.coord = position.coords;
         let location = {
           position: {
-            coords:{
-              accuracy:position.coords.accuracy,
-              altitude:position.coords.altitude,
-              altitudeAccuracy:position.coords.altitudeAccuracy,
-              heading:position.coords.heading,
-              latitude:position.coords.latitude,
-              longitude:position.coords.longitude,
-              speed:position.coords.speed
+            coords: {
+              accuracy: position.coords.accuracy,
+              altitude: position.coords.altitude,
+              altitudeAccuracy: position.coords.altitudeAccuracy,
+              heading: position.coords.heading,
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              speed: position.coords.speed
             },
-            timestamp:position.timestamp
+            timestamp: position.timestamp
           }
-         }
+        }
         // console.log(JSON.stringify(location))
-        
+       
         this.serverEmmiter.emmitLocation(location)
-        .subscribe(
-                  data => {
+          .subscribe(
+          data => {
 
-                      if(this.mgrs_currentLocation != data.currentLocation){
-                        //mi-am schimbat locatia si trebuie sa trimit nivelul de zgomot
-                        this.sensorCollector.recordDecibel(10000).then((recordResult)=>{
-                              console.log(`have to send \n`,recordResult);   
-                              let decibelMeasure = {
-                                "mgrs":data.currentLocation,
-                                "recordResult":recordResult
-                              }       
-                              this.serverEmmiter.emmitNoiseLevel(decibelMeasure).subscribe(
+            // if (this.mgrs_currentLocation != data.currentLocation) {
+            //   //mi-am schimbat locatia si trebuie sa trimit nivelul de zgomot
+            //   console.log(`${this.mgrs_currentLocation} != ${data.currentLocation}`,this.mgrs_currentLocation != data.currentLocation);
+            //   //this.measureNoise(data.currentLocation)
+            // }
+            console.log(data);
+            this.mgrs_currentLocation = data.currentLocation;
+            this.mgrs_lastLocation = data.lastLocation;
 
-                                (data)=>{
-                                  
-                                },
-                                (err=>{
-
-                                })
-                              );
-                        }).catch((err)=>{
-                          console.log("error on recording")
-                        });
-                      }
-                      console.log(data);
-                      this.mgrs_currentLocation = data.currentLocation;
-                      this.mgrs_lastLocation    = data.lastLocation;
-                      
-                  },
-                  err=>{
-                      console.log(err);
-                  });
+          },
+          err => {
+            console.log(err);
+          });
 
       })
     }
 
+  }
+
+  measureNoise(location) {
+    console.log("MEASURE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>...",location)
+    // if(!location)
+      // return;
+    this.sensorCollector.recordDecibel(10000).then((recordResult) => {
+      console.log(`have to send \n`, recordResult);
+      let decibelMeasure = {
+        "mgrs": location,
+        "recordResult": recordResult
+      }
+      this.serverEmmiter.emmitNoiseLevel(decibelMeasure).subscribe(
+
+        (data) => {
+
+        },
+        (err => {
+
+        })
+      );
+    }).catch((err) => {
+      console.log("error on recording")
+    });
   }
 
   stopWatchingLocation() {
@@ -166,7 +182,7 @@ export class TestPage implements OnInit, OnDestroy {
       this.positionSubscription = null;
     }
   }
-  
+
   ionViewDidLoad() {
     console.log('ionViewDidLoad Location');
   }
