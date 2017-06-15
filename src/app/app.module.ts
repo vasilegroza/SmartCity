@@ -14,7 +14,6 @@ import { EventDetails } from '../pages/event-details/event-details'
 import { StartUpPage } from '../pages/start-up-page/start-up-page'
 import { TestPage } from '../pages/test/test'
 import { EventListPage } from '../pages/event-list/event-list'
-import { EventFetcherProvider } from '../providers/event-fetcher/event-fetcher';
 
 // auth component
 import { HttpModule, Http } from '@angular/http'
@@ -97,7 +96,6 @@ export function getAuthHttp(http) {
       useFactory: getAuthHttp,
       deps: [Http]
     },
-    EventFetcherProvider,
     CityProvider,
   ]
 })

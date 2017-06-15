@@ -37,10 +37,10 @@ export class EventListPage {
     let timeEnd = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     console.log(timeNow.toISOString())
     console.log(timeEnd.toISOString())
-    
+
     this.serviceEmmiter.loadAllEvents({
-      mgrs: this.authService.user.mgrs_currentLocation, 
-      startTime: timeNow.toISOString(), 
+      mgrs: this.authService.user.mgrs_currentLocation,
+      startTime: timeNow.toISOString(),
       endTime: timeEnd.toISOString()
     })
       .subscribe(
@@ -70,8 +70,9 @@ export class EventListPage {
     var now = new Date(Date.now());
 
     var hours = Math.trunc((start.getTime() - now.getTime()) / 36e5);
-    var days = Math.trunc(hours/24);
-    let time = `${days} days & ${hours} hours until start`
+    var days = Math.trunc(hours / 24);
+    var h = hours % 24
+    let time = `${days} days & ${h} hours until start`
     // console.log(hours);
     return time;
   }

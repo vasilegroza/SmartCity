@@ -58,8 +58,8 @@ remainingHours(startTime): String {
 
     var hours = Math.trunc((start.getTime() - now.getTime()) / 36e5);
     var days = Math.trunc(hours/24);
-    var hours = hours % 24
-    let time = `${days} days & ${hours} hours until start`
+    var h = hours % 24
+    let time = `${days} days & ${h} hours until start`
     // console.log(hours);
     return time;
   }
