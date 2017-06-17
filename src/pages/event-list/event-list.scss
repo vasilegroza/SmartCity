@@ -1,26 +1,31 @@
 .ios, .md {
 page-event-list {
 
-
+        .oktoast{
+                background-color: "green";
+                opacity:0.6;
+                vertical-align: 'align-right'
+            }
  
-   ion-segment {
-    display: block;
-    white-space: nowrap;
-    font-size: 0;
-    overflow: auto;
+        
+        ion-segment {
+            display: block;
+            white-space: nowrap;
+            font-size: 0;
+            overflow: auto;
 
-    &::-webkit-scrollbar {
-        width: 0;
-        height: 0;
-        display: none;
-    }
+            &::-webkit-scrollbar {
+                width: 0;
+                height: 0;
+                display: none;
+            }
 
-    ion-segment-button.segment-button {
-        display: inline-block;
-        min-width: 100px;
-        width: auto;
-    }
-}
+            ion-segment-button.segment-button {
+                display: inline-block;
+                min-width: 100px;
+                width: auto;
+            }
+        }
  
         .header-image {
             background-image: url(https://ununsplash.imgix.net/photo-1421091242698-34f6ad7fc088?fit=crop&fm=jpg&h=650&q=75&w=950);
@@ -86,6 +91,8 @@ page-event-list {
 
             }
  
+  
+    
     }
 
     

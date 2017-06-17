@@ -9,10 +9,11 @@ import 'rxjs/add/operator/catch';
 @Injectable()
 export class ServerEmmiter {
     // private serverUrl = 'http://localhost:8000'
-    private serverUrl = "http://172.17.50.160:8000" //pentru localhost in wi-fi
+    private serverUrl = "http://172.17.50.219:8000" //pentru localhost in wi-fi
     // private serverUrl = 'http://ec2-13-58-71-207.us-east-2.compute.amazonaws.com:8000'
     // private serverUrl = 'https://sc-server-testing-utilizatorvalid.c9users.io'
     // private serverUrl = 'http://smartcityserver.azurewebsites.net/'
+    public noPhotoUrl :String = `${this.serverUrl}/no_image.png`
     constructor(private http: Http, private authHttp: AuthHttp) {
     }
 
@@ -70,7 +71,7 @@ export class ServerEmmiter {
      */
     loadAllEvents(params): Observable<Array<Object>> {
 
-        let endpoint = this.serverUrl + `/events/?mgrs=${params.mgrs}&startTime=${params.startTime}&endTime=${params.endTime}`;
+        let endpoint = this.serverUrl + `/events/?mgrs=${params.mgrs}&startTime=${params.startTime}&endTime=${params.endTime}&radius=${params.radius}`;
         let headers = new Headers({ "Content-Type": 'application/json' });
         let options = new RequestOptions({ headers: headers });
         return this.authHttp.get(endpoint, options)
@@ -90,12 +91,28 @@ export class ServerEmmiter {
             .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
     }
 
-    getWeather(days, coord): Observable<any> {
+    getWeather(units, days, coord): Observable<any> {
         console.log(days, coord);
         //metric for celsius
         //imperial for faranhait
         //kelvin by default
-        let endpoint = this.serverUrl + `/weather?lat=${coord.latitude}&lon=${coord.longitude}&cnt=${days}&units=metric`
+        let metric
+        switch (units) {
+            case 'C':
+                metric = '&units=metric';
+                break;
+            case 'F':
+                metric = 'imperial'
+                break
+            case 'K':
+                metric = ''
+                break;
+            default:
+                metric = '&units=metric';
+                break;
+        }
+
+        let endpoint = this.serverUrl + `/weather?lat=${coord.latitude}&lon=${coord.longitude}&cnt=${days}${metric}`
         let headers = new Headers({ "content-type": 'application/json' });
 
         // let searchParams = new URLSearchParams()
@@ -119,6 +136,37 @@ export class ServerEmmiter {
             .catch((error: any) => Observable.throw(error.json().error || 'Server error'))
 
     }
+
+    getCityGeneralData(mgrs_value): Observable<any> {
+        let endpoint = this.serverUrl + `/city/${mgrs_value}`;
+        let headers = new Headers({ 'content-type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.authHttp.get(endpoint, options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Server error'))
+    }
+
+    getCityPlaces(mgrs_value): Observable<any> {
+        let endpoint = this.serverUrl + `/city/${mgrs_value}/places`;
+        let headers = new Headers({ 'content-type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.authHttp.get(endpoint, options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Server error'))
+    }
+
+    getPlaceInfo(place_id): Observable<any> {
+        let endpoint = this.serverUrl + `/place/${place_id}`;
+        let headers = new Headers({ 'content-type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.authHttp.get(endpoint, options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Server error'))
+    }
+
 
 
 }

@@ -11,7 +11,6 @@ import { Geolocation, Coordinates, Geoposition } from '@ionic-native/geolocation
 import { SensorCollector } from '../../providers/sensor-collector'
 
 import { ServerEmmiter } from "../../services/server-emmiter/server-emmiter.service"
-import { CityProvider } from '../../providers/city/city'
 
 
 /**
@@ -34,6 +33,8 @@ export class Home {
   isApp: boolean;
   watch: Observable<Geoposition>;
   debug: String = '';
+  city: any;
+  placesDictionary: Array<{ title: string, placesObj: Object, icon: string, showDetails: boolean }> = [];
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public menu: MenuController,
@@ -41,49 +42,42 @@ export class Home {
     public platform: Platform,
     public sensorCollector: SensorCollector,
     public auth: AuthService,
-    public city: CityProvider,
     public serverEmmiter: ServerEmmiter) {
     this.menu = menu;
     this.menu.enable(true, "myMenu")
-    // console.log("constructorHome", this.navParams.get("user"));
+
     this.user = this.navParams.get("user");
-    console.log("HOME_PAGE", this.user);
 
 
     if (this.platform.is('core') || this.platform.is('mobileweb')) {
-      this.isApp = false;
+      this.auth.isApp = false;
     }
     else {
-      this.isApp = true;
+      this.auth.isApp = true;
     }
-    
-    // this.serverEmmiter.getUserData(this.user["user_id"]).subscribe(
-    //   data=>{
-    //     console.log("GETTING USER FROM SERVER",data);
-    //   },
-    //   error=>{
-
-    //   }
-    // );
     this.watchLocation();
-    this.city.nearbyPlaces('locatia', 500, 'food');
+
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad Home');
   }
 
+  /**
+   * 
+   * @param onChangeMgrs 
+   */
   watchLocation() {
 
     if (!this.positionSubscription) {
       this.debug += "Starting to watch location:\n"
-      if (!this.isApp) {
+      if (!this.auth.isApp) {
         this.measureNoise(this.mgrs_currentLocation);
       } else {
-        this.debug+="set interval for measureNoise"
+        this.debug += "set interval for measureNoise\n"
         setInterval(() => {
           this.measureNoise(this.mgrs_currentLocation);
-        },60000);
+        }, 60000);
       }
       this.positionSubscription = this.sensorCollector.getLocation().subscribe(position => {
         this.coord = position.coords;
@@ -107,11 +101,15 @@ export class Home {
           .subscribe(
           data => {
 
-            // if (this.mgrs_currentLocation != data.currentLocation) {
-            //   //mi-am schimbat locatia si trebuie sa trimit nivelul de zgomot
-            //   console.log(`${this.mgrs_currentLocation} != ${data.currentLocation}`,this.mgrs_currentLocation != data.currentLocation);
-            //   //this.measureNoise(data.currentLocation)
-            // }
+            if (this.mgrs_currentLocation != data.currentLocation) {
+              //mi-am schimbat locatia si trebuie sa trimit nivelul de zgomot
+              console.log(`${this.mgrs_currentLocation} != ${data.currentLocation}`, this.mgrs_currentLocation != data.currentLocation);
+              this.auth.user["mgrs_currentLocation"] = data.currentLocation;
+              this.auth.user["mgrs_lastLocation"] = data.lastLocation;
+              this.loadCityData();
+              this.loadPlaces();
+              //this.measureNoise(data.currentLocation)
+            }
             console.log(data);
             this.auth.user["mgrs_currentLocation"] = data.currentLocation;
             this.auth.user["mgrs_lastLocation"] = data.lastLocation;
@@ -129,14 +127,12 @@ export class Home {
   }
 
   measureNoise(location) {
-    this.debug+=`MEASURE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>...\n${location}`
-    if(!location)
-    { 
-      this.debug +="HERE SUKA\n"  
+    this.debug += `MEASURE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>...\n${location}`
+    if (!location) {
       return;
     }
     this.sensorCollector.recordDecibel(10000).then((recordResult) => {
-      this.debug+=`have to send \n`+ JSON.stringify(recordResult);
+      this.debug += `have to send \n` + JSON.stringify(recordResult);
       let decibelMeasure = {
         "mgrs": location,
         "recordResult": recordResult
@@ -155,12 +151,63 @@ export class Home {
     });
   }
 
-  stopWatchingLocation() {
-    if (this.positionSubscription) {
-      console.log("StopWatchingLocation")
-      this.positionSubscription.unsubscribe();
-      this.positionSubscription = null;
+  loadCityData() {
+    console.log("LoadCityData for location:")
+    console.log(this.auth.user.mgrs_currentLocation);
+
+    this.serverEmmiter.getCityGeneralData(this.auth.user.mgrs_currentLocation)
+      .subscribe(
+      data => {
+        console.log(data);
+        this.city = data.result.result;
+      },
+      error => {
+
+      }
+      )
+  }
+  getTitleForPlaceType(placeType) {
+    return placeType.replace('_', ' ').toLocaleUpperCase();
+  }
+  loadPlaces() {
+    console.log('loading nearby Places for location:');
+    console.log(this.auth.user.mgrs_currentLocation);
+
+
+    this.serverEmmiter.getCityPlaces(this.auth.user.mgrs_currentLocation)
+      .subscribe(
+      data => {
+        console.log("places loaded", data);
+        this.placesDictionary = [];
+        for (var placeType in data.places) {
+          console.log(placeType, '=>', data.places[placeType]);
+          this.placesDictionary.push(
+            {
+              title: this.getTitleForPlaceType(placeType),
+              placesObj: data.places[placeType],
+              icon: 'add-circle',
+              showDetails: false
+            })
+        }
+        console.log(this.placesDictionary);
+
+
+      },
+      error => {
+
+      }
+      )
+  }
+  toggleDetails(data) {
+    console.log('toogle')
+    if (data.showDetails) {
+      data.showDetails = false;
+      data.icon = 'add-circle';
+    } else {
+      data.showDetails = true;
+      data.icon = 'remove-circle';
     }
   }
+
 
 }

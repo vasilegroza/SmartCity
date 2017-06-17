@@ -14,7 +14,7 @@ import { EventDetails } from '../pages/event-details/event-details'
 import { StartUpPage } from '../pages/start-up-page/start-up-page'
 import { TestPage } from '../pages/test/test'
 import { EventListPage } from '../pages/event-list/event-list'
-
+import { PlaceDetailsPage} from '../pages/place-details/place-details'
 // auth component
 import { HttpModule, Http } from '@angular/http'
 import { AuthConfig, AuthHttp } from 'angular2-jwt'
@@ -26,14 +26,17 @@ import { Storage } from '@ionic/storage'
 import { Geolocation } from "@ionic-native/geolocation"
 import { DBMeter } from '@ionic-native/db-meter'
 import { SensorCollector } from '../providers/sensor-collector';
-
+import { Toast } from '@ionic-native/toast'
 
 // css
 import { ParallaxHeaderDirective } from '../directives/parallax-header/parallax-header';
-
+import { GalleryModal, ZoomableImage } from  'ionic-gallery-modal'
 
 import { CityProvider } from '../providers/city/city';
 import { WeatherComponent } from '../components/weather/weather';
+import { CityComponent } from '../components/city/city';
+import { PlaceListComponent } from '../components/place-list/place-list';
+import { PlaceComponent } from '../components/place/place';
 
 
 let storage: Storage = new Storage('localstorage');
@@ -55,12 +58,17 @@ export function getAuthHttp(http) {
     EventDetails,
     TestPage,
     EventListPage,
+    PlaceDetailsPage,
     ParallaxHeaderDirective,
     WeatherComponent,
-
+    CityComponent,
     //HelloIonicPage,
     // ItemDetailsPage,
     // ListPage
+    GalleryModal, 
+    ZoomableImage,
+    PlaceListComponent,
+    PlaceComponent
   ],
   imports: [
     BrowserModule,
@@ -78,6 +86,8 @@ export function getAuthHttp(http) {
     EventDetails,
     TestPage,
     EventListPage,
+    PlaceDetailsPage,
+    GalleryModal,
     //HelloIonicPage,
     // ItemDetailsPage,
     // ListPage
@@ -97,6 +107,7 @@ export function getAuthHttp(http) {
       deps: [Http]
     },
     CityProvider,
+    Toast
   ]
 })
 export class AppModule { }

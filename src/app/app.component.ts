@@ -48,8 +48,7 @@ export class MyApp implements OnInit, OnDestroy {
       { title: "Events Nearby", component: EventListPage, icon:"clipboard"},
       { title: 'To Do', component: ToDo, icon: "list" },
       { title: 'Settings', component: Settings, icon: "settings" },
-      { title: 'Logout', component: null, icon: "log-out" }
-
+      { title: 'Logout', component: null, icon: "log-out"}
     ];
   }
 

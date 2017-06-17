@@ -1,5 +1,5 @@
 .ios, .md{
-    page-event-details {
+    page-place-details {
         .header-image{
             height:40vh;
         }
@@ -22,11 +22,11 @@
             opacity: 0.4;
             box-shadow: 0px 1px 13px 1px rgba(0,0,0,0.77);
         }
+    
     }
-    .item[no-lines].bottom-border { 
-    border-bottom: 1px solid grey; 
-    }
-    .weather_newLine{
-        white-space: pre;
-    }
+
+    #map_canvas {
+    width: 100%;
+    height: 50%;
+}    
 }

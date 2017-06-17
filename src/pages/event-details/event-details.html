@@ -9,7 +9,7 @@
 
 </ion-header>
 
-<ion-content fullqscreen parallax-header>
+<ion-content  fullqscreen parallax-header>
 
   <div class="header-image" [ngStyle]="{'background-image': 'url(' + selectedEvent.coverPicture + ')'}"></div>
 
@@ -41,7 +41,8 @@
           <div >  
              <weather *ngFor="let day of d.details; let i=index" 
                   [dayForecast]="day"
-                  [indexToUse] = 'i'>...
+                  [indexToUse] = 'i'
+                  [tempUnit] ='tempUnit'>...
              </weather>
           </div>
         </div>
