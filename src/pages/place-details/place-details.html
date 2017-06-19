@@ -21,6 +21,74 @@
     <h3 text-center>
       {{place.name}}
     </h3>
-    <div id="map_canvas"></div>
+    <ion-list>
+      <ion-item>
+        <div ion-content>
+          <h4>
+            {{placeDetails.formatted_address}}
+          </h4>
+        </div>
+        <div item-end>
+          <button (click)="openMaps(event)" ion-button outline item-end icon-left>
+          <ion-icon name="map"> Google Maps</ion-icon>
+        </button>
+        </div>
+      </ion-item>
+
+      <ion-item>
+        <h2>Place rating:
+
+          <div>
+            <ion-rating [numStars]="5" [value]="placeDetails.rating">
+            </ion-rating>
+            <!--({{placeDetails.rating}})-->
+          </div>
+        </h2>
+      </ion-item>
+      <ion-item text-wrap >
+        <h2>
+          Now:
+          <span *ngIf="placeDetails.opening_hours?.open_now == true">open!</span>
+          <span *ngIf="placeDetails.opening_hours?.open_now != true">closed!</span>
+        </h2>
+        <div *ngIf = "placeDetails.opening_hours">
+          <ul>
+            Working time
+            <li *ngFor="let day of placeDetails.opening_hours.weekday_text">
+              {{day}}
+            </li>
+          </ul>
+        </div>
+      </ion-item>
+      <ion-list>
+        <ion-list-header>
+          About.
+        </ion-list-header>
+        <ion-item text-wrap class="bottom-border" *ngFor="let d of data" (click)="toggleDetails(d)">
+          <ion-icon color="primary" item-right [name]="d.icon"></ion-icon>
+          {{d.title}}
+          <div *ngIf="d.showDetails">
+            <div *ngIf="d.type ==='text'">
+              <div *ngFor="let element of d.details">
+                {{element}}
+              </div>
+            </div>
+            <div *ngIf="d.type ==='weather'">
+              <div>
+                <weather *ngFor="let day of d.details; let i=index" [dayForecast]="day" [indexToUse]='i' [tempUnit]='tempUnit'>...
+                </weather>
+              </div>
+            </div>
+
+          </div>
+        </ion-item>
+      </ion-list>
+
+      <button ion-button (click)="goToPlace($event)">
+      Go  to {{placeDetails.name}}</button>
+
+    </ion-list>
+
   </div>
+
 </ion-content>

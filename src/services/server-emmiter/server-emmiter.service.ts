@@ -9,7 +9,7 @@ import 'rxjs/add/operator/catch';
 @Injectable()
 export class ServerEmmiter {
     // private serverUrl = 'http://localhost:8000'
-    private serverUrl = "http://172.17.50.219:8000" //pentru localhost in wi-fi
+    private serverUrl = "http://192.168.0.100:8000" //pentru localhost in wi-fi
     // private serverUrl = 'http://ec2-13-58-71-207.us-east-2.compute.amazonaws.com:8000'
     // private serverUrl = 'https://sc-server-testing-utilizatorvalid.c9users.io'
     // private serverUrl = 'http://smartcityserver.azurewebsites.net/'
@@ -163,6 +163,16 @@ export class ServerEmmiter {
         let options = new RequestOptions({ headers: headers });
 
         return this.authHttp.get(endpoint, options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Server error'))
+    }
+
+    addOwnEvent(event):Observable<any>{
+        let endpoint = this.serverUrl + `/schedule_place`
+        let bodyString = JSON.stringify(event);
+        let headers = new Headers({ "Content-Type": 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        return this.authHttp.post(endpoint, bodyString, options)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Server error'))
     }

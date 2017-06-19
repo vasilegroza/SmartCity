@@ -1,0 +1,37 @@
+<!--
+  Generated template for the PlaceFormModalPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{title}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-label>Pick a date</ion-label>
+      <span item-start ion-datepicker (ionChanged)="setDate($event);" [value]="localDate" [min]="localDate" [full]="true" [calendar]="false"
+        clear class="ScheduleDate">
+      <span>{{localDate | date}} <ion-icon name="calendar"></ion-icon> </span>
+      </span>
+      <span item-right *ngIf="!date">date not selected</span>
+      <span item-right *ngIf="date">{{date.toLocaleDateString()}}</span>
+    </ion-item>
+    <ion-item>
+      <ion-label>Start Time</ion-label>
+      <ion-datetime displayFormat="HH:mm" [(ngModel)]="startTime"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label>End Time</ion-label>
+      <ion-datetime displayFormat="HH:mm" [(ngModel)]="endTime"></ion-datetime>
+    </ion-item>
+  </ion-list>
+  <button *ngIf="date && startTime && endTime" ion-button (click)="passDataBack()"> done </button>
+</ion-content>

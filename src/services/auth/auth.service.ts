@@ -33,7 +33,7 @@ export class AuthService {
       },
       theme: {
         primaryColor: '#31324F',
-        logo:'http://172.17.50.219:8000/logo1.png'
+        logo:'http://ec2-13-58-71-207.us-east-2.compute.amazonaws.com:8000/logo1.png'
       },
       allowForgotPassword: false
     });

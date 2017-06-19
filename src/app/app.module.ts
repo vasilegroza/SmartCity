@@ -14,7 +14,11 @@ import { EventDetails } from '../pages/event-details/event-details'
 import { StartUpPage } from '../pages/start-up-page/start-up-page'
 import { TestPage } from '../pages/test/test'
 import { EventListPage } from '../pages/event-list/event-list'
-import { PlaceDetailsPage} from '../pages/place-details/place-details'
+import { PlaceDetailsPage } from '../pages/place-details/place-details'
+import { MapPage } from '../pages/map/map'
+
+import { PlaceFormModalPage } from '../pages/place-form-modal/place-form-modal'
+
 // auth component
 import { HttpModule, Http } from '@angular/http'
 import { AuthConfig, AuthHttp } from 'angular2-jwt'
@@ -28,9 +32,17 @@ import { DBMeter } from '@ionic-native/db-meter'
 import { SensorCollector } from '../providers/sensor-collector';
 import { Toast } from '@ionic-native/toast'
 
+
+//google maps
+import {GoogleMaps} from '@ionic-native/google-maps'
+
+
+import {DatePickerModule} from 'datepicker-ionic2'
 // css
 import { ParallaxHeaderDirective } from '../directives/parallax-header/parallax-header';
-import { GalleryModal, ZoomableImage } from  'ionic-gallery-modal'
+import { GalleryModal, ZoomableImage } from 'ionic-gallery-modal'
+import { IonRating } from '../components/ion-rating/ion-rating';
+
 
 import { CityProvider } from '../providers/city/city';
 import { WeatherComponent } from '../components/weather/weather';
@@ -59,21 +71,26 @@ export function getAuthHttp(http) {
     TestPage,
     EventListPage,
     PlaceDetailsPage,
+    MapPage,
+    PlaceFormModalPage,
+
     ParallaxHeaderDirective,
     WeatherComponent,
     CityComponent,
     //HelloIonicPage,
     // ItemDetailsPage,
     // ListPage
-    GalleryModal, 
+    GalleryModal,
     ZoomableImage,
     PlaceListComponent,
-    PlaceComponent
+    PlaceComponent,
+    IonRating
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
     HttpModule,
+    DatePickerModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -88,6 +105,8 @@ export function getAuthHttp(http) {
     EventListPage,
     PlaceDetailsPage,
     GalleryModal,
+    MapPage,
+    PlaceFormModalPage,
     //HelloIonicPage,
     // ItemDetailsPage,
     // ListPage
@@ -107,7 +126,8 @@ export function getAuthHttp(http) {
       deps: [Http]
     },
     CityProvider,
-    Toast
+    Toast,
+    GoogleMaps,
   ]
 })
 export class AppModule { }
